@@ -3,6 +3,7 @@
 import time
 import logging
 import os
+import sys
 import multiprocessing as mp
 from collections import deque
 
@@ -76,7 +77,7 @@ def setup_and_get_logger():
 
 def single_process_production():
     logger = setup_and_get_logger()
-    cities = [p.HlybokayeParser(), HlybokayeParserTest1(), HlybokayeParserTest2(),
+    cities = [p.VitebskParser(), p.HlybokayeParser(), HlybokayeParserTest1(), HlybokayeParserTest2(),
               HlybokayeParserTest3(), HlybokayeParserTest4()]
 
     start_time = time.time()
@@ -98,7 +99,7 @@ def single_process_production():
 def multiprocess_production():
     logger = setup_and_get_logger()
 
-    cities = [p.HlybokayeParser(), HlybokayeParserTest1(), HlybokayeParserTest2(),
+    cities = [p.VitebskParser(), p.HlybokayeParser(), HlybokayeParserTest1(), HlybokayeParserTest2(),
               HlybokayeParserTest3(), HlybokayeParserTest4()]
 
 
@@ -150,9 +151,15 @@ def _dispatch_event(event_tuple, list_of_progress_bars):
 
 
 if __name__ == '__main__':
-    TEST_RUN = True
-
-    if TEST_RUN:
-        multiprocess_production()
+    SEQ_RUN = True
+    if len(sys.argv) == 1 or sys.argv[1] == "--s":
+        SEQ_RUN = True
+    elif sys.argv[1] == "--m":
+        SEQ_RUN = False
     else:
+        SEQ_RUN = True
+
+    if SEQ_RUN:
         single_process_production()
+    else:
+        multiprocess_production()
